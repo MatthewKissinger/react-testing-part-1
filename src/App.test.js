@@ -1,8 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+
+// test is a function provided by Jest
+// takes 2 arguments 
+// 1) string that represents the name of the test
+// 2) function which has the code of the test
+
+test('render h1 element', () => {
+  // render the component that we will be testing
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+
+  screen.debug();
+  // screen is used to select elements in the document
+  expect(screen.getByText('Hello World')).toBeInTheDocument();
+})
