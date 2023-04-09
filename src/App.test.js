@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import App from './App';
 
 
@@ -7,11 +7,11 @@ import App from './App';
 // 1) string that represents the name of the test
 // 2) function which has the code of the test
 
-test('render h1 element', () => {
-  // render the component that we will be testing
-  render(<App />);
+test('loading text is shown while API request is in progress', async() => {
+  render(<App />)
 
-  screen.debug();
-  // screen is used to select elements in the document
-  expect(screen.getByText('Hello World')).toBeInTheDocument();
+  const loading = screen.getByText('Loading...');
+  expect(loading).toBeInTheDocument();
+
+  await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
 })
