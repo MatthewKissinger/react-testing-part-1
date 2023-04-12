@@ -1,17 +1,50 @@
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import App from './App';
 
+describe('Testing App Component', () => {
+  
+  test('loading text is shown while API request is in progress', async() => {
+    render(<App />)
+  
+    const loading = screen.getByText('Loading...');
+    expect(loading).toBeInTheDocument();
+  
+    await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
+  })
 
-// test is a function provided by Jest
-// takes 2 arguments 
-// 1) string that represents the name of the test
-// 2) function which has the code of the test
+  test("user's name is rendered", async() => {
+    // Mocking the fetch function in App.js
+    window.fetch = jest.fn(() => {
+      const user = { name: 'Jack', email: 'jack@email.com' };
 
-test('loading text is shown while API request is in progress', async() => {
-  render(<App />)
+      return Promise.resolve({
+        json: () => Promise.resolve(user),
+      });
+    });
 
-  const loading = screen.getByText('Loading...');
-  expect(loading).toBeInTheDocument();
+    render(<App />)
+  
+    const userName = await screen.findByText('Jack');
+    expect(userName).toBeInTheDocument();
+  })
 
-  await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
+  test('error message is shown', async() => {
+    window.fetch.mockImplementationOnce(() => {
+      return Promise.reject({ message: 'API is down' });
+    });
+  
+    render(<App />);
+
+    window.fetch.mockImplementationOnce(() => {
+      return Promise.reject({ message: 'API is down' });
+    });
+  
+    const errorMessage = await screen.findByText('API is down');
+    expect(errorMessage).toBeInTheDocument();
+  })
 })
+
+
+
+
+
